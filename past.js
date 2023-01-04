@@ -8,7 +8,7 @@ function crearCard(array, where){
     card.classList.add("justify-content-evenly")
     card.classList.add("flex-wrap")
     for (let contador of lista){
-        if(data.currentDate >= contador.date){
+        if(data.currentDate > contador.date){
             card.innerHTML +=`<div class="card shadow p-3 mb-5 bg-body rounded" style="width: 18rem;">
             <img src="${contador.image}" class="card-img-top" alt="Imagen relacionada">
             <div class="card-body d-flex flex-column justify-content-between">

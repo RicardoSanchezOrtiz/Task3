@@ -24,5 +24,3 @@ card.innerHTML= `<div class="row g-0">
 console.log(card)
 contenedor.appendChild(card)
 
-
-crearCard(lista, contenedor)
