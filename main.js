@@ -1,8 +1,8 @@
 let contenedor1 = document.getElementById("checklist");
 let contenedor2 = document.getElementById("contenedorCards");
 let barraDeBusqueda = document.getElementById("buscador");
-let lista = data.events
-
+let lista = data.events 
+crearCard(lista, contenedor2)
 function crearCard(array, where){
     where.innerHTML = ""
     let card = document.createElement("div")
@@ -16,17 +16,20 @@ function crearCard(array, where){
           <h5 class="card-title">${contador.name}</h5>
           <p class="card-text">${contador.description}</p>
           <p class="card-text">${contador.date}</p>
-          <a href="#" class="detailsButton">Details</a>
+          <a href="./details.html?_id=${contador._id}" class="detailsButton">Details</a>
         </div>
         </div>`
     }
     where.appendChild(card)
+    
   }
 
-function evento(){
-  let checked =document.querySelectorAll('input[type="checkbox"]:checked')
+function filtroCheck(casillasSombreadas){
   let filtro = []
-  for(let selector of checked){
+  if(casillasSombreadas.length == 0){
+    return lista
+  }
+  for(let selector of casillasSombreadas){
     filtro.push(selector.name)
   }
   let seleccionados =[]
@@ -36,29 +39,33 @@ function evento(){
     }
   }
   console.log(seleccionados)
-  console.log(filtro)
-  crearCard(seleccionados, contenedor2)
-}
-
-
-
-contenedor1.addEventListener('change', evento)
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-function filtroCategoria (array){
-  let seleccionados = []
-  if (barraDeBusqueda.value != ""){
-    for ( let selector of array){
-      if(selector.category.toLowerCase().includes(barraDeBusqueda.value.toLowerCase())){
-        seleccionados.push(selector)
-      }
-    }
-  }
   return seleccionados
 }
-function filtro(){
-  let cardsFiltradas = filtroCategoria(lista)
-  crearCard(cardsFiltradas, contenedor2)
+
+contenedor1.addEventListener('input', filtroCombinado)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+barraDeBusqueda.addEventListener( 'input' , filtroCombinado)
+
+function filtroBusqueda (array){
+  if (barraDeBusqueda.value == ""){
+    return array
+    }
+  return array.filter(evento => evento.description.toLowerCase().includes(barraDeBusqueda.value.toLowerCase()) || evento['name'].toLowerCase().includes(barraDeBusqueda.value.toLowerCase()))
 }
-barraDeBusqueda.addEventListener( 'input' , filtro())
+
+function filtroCombinado(){
+  let checked =document.querySelectorAll('input[type="checkbox"]:checked')
+  if (checked.length == 0 && barraDeBusqueda.value == ""){
+    return crearCard(lista, contenedor2)
+  }
+  let filtradosCheck = filtroCheck(checked)
+  let filtradosBusqueda = filtroBusqueda(filtradosCheck)
+  if (filtradosBusqueda.length == 0){
+    return contenedor2.innerHTML =`<h3 class="my-5">Your search was unsuccessful</h3>
+    <h4>Please, try another search</h4>
+    <h4>Toggle the categories you wish to see and look for the name of the event you're looking for</h4>`
+  }
+  console.log(filtradosBusqueda)
+  return crearCard(filtradosBusqueda,contenedor2)
+}
+
